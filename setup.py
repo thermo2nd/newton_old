@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from zaifbot import __version__
+from newton import __version__
 
 
 def readme():
@@ -7,11 +7,11 @@ def readme():
         return f.read()
 
 setup(
-    name='zaifbot',
+    name='newton',
     version=__version__,
     description='trading bot framework for zaif exchange',
     long_description=readme(),
-    url='https://github.com/techbureau/zaifbot',
+    url='https://github.com/techbureau/newton',
     author='AkiraTaniguchi DaikiShiroi Monji',
     author_email='a.taniguchi@techbureau.jp daikishiroi@gmail.com',
     include_package_data=True,
@@ -42,9 +42,9 @@ setup(
     },
     entry_points="""\
       [console_scripts]
-      init_database = zaifbot.db.seed:init_database
-      clear_database = zaifbot.db.seed:clear_database
-      refresh_database = zaifbot.db.seed:refresh_database
-      install_ta_lib = zaifbot.setup.talib:install_ta_lib
+      init_database = newton.db.seed:init_database
+      clear_database = newton.db.seed:clear_database
+      refresh_database = newton.db.seed:refresh_database
+      install_ta_lib = newton.setup.talib:install_ta_lib
       """,
 )

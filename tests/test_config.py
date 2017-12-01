@@ -1,6 +1,6 @@
 import unittest
 from os import environ as env
-from zaifbot.config import get_keys, set_keys
+from newton.config import get_keys, set_keys
 
 
 class TestConfig(unittest.TestCase):

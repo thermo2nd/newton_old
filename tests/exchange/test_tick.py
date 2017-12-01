@@ -1,5 +1,5 @@
 import unittest
-from zaifbot.exchange import Tick, CurrencyPair
+from newton.exchange import Tick, CurrencyPair
 
 
 class TestTick(unittest.TestCase):

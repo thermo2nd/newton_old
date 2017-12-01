@@ -1,5 +1,5 @@
 import unittest
-from zaifbot.exchange import Period
+from newton.exchange import Period
 
 
 class TestPeriod(unittest.TestCase):

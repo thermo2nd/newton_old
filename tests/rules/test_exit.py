@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock
-from zaifbot.rules import Exit
+from newton.rules import Exit
 
 
 class TradeForExitTest:

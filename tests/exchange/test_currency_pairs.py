@@ -1,5 +1,5 @@
 import unittest
-from zaifbot.exchange import CurrencyPair
+from newton.exchange import CurrencyPair
 
 
 class TestCurrencyPair(unittest.TestCase):

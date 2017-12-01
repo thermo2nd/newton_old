@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock
-from zaifbot.rules.entry.base import Entry
+from newton.rules.entry.base import Entry
 
 
 class TradeForEntryTest:

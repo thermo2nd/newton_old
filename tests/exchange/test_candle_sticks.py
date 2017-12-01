@@ -1,5 +1,5 @@
 import unittest
-from zaifbot.exchange import CandleSticks
+from newton.exchange import CandleSticks
 
 
 class TestCandleSticks(unittest.TestCase):

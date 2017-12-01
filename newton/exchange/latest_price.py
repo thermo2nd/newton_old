@@ -1,0 +1,14 @@
+from newton.exchange.currency_pairs import CurrencyPair
+from newton.exchange.api.http import BotPublicApi
+from newton.exchange.api.websocket import BotStreamApi
+
+
+def get_latest_price(currency_pair):
+    currency_pair = CurrencyPair(currency_pair)
+
+    if currency_pair.is_token:
+        public_api = BotPublicApi()
+        return public_api.last_price(currency_pair)['last_price']
+    else:
+        stream_api = BotStreamApi()
+        return stream_api.execute(currency_pair)['last_price']['price']

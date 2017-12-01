@@ -1,5 +1,5 @@
 import unittest
-from zaifbot.exchange.action import Action, Buy, Sell
+from newton.exchange.action import Action, Buy, Sell
 
 
 class TestAction(unittest.TestCase):

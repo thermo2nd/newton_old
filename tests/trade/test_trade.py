@@ -1,5 +1,5 @@
 import unittest
-from zaifbot.trade.trade import Trade
+from newton.trade.trade import Trade
 
 
 class TestTrade(unittest.TestCase):
