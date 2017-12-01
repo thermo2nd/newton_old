@@ -1,4 +1,4 @@
-class ZaifBotError(Exception):
+class NewtonError(Exception):
     def __init__(self, message):
         self.message = message
 
@@ -6,7 +6,7 @@ class ZaifBotError(Exception):
         return str(self.message)
 
 
-class InvalidRequest(ZaifBotError):
+class InvalidRequest(NewtonError):
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):

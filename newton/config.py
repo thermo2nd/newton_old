@@ -1,7 +1,7 @@
 import os
 import configparser
 from os import environ as env
-from newton.errors import ZaifBotError
+from newton.errors import NewtonError
 
 
 # for trade_api
@@ -21,4 +21,4 @@ def get_keys():
         config.read(config_file)
         return config['api_keys']['key'], config['api_keys']['secret']
 
-    raise ZaifBotError('api keys are not set')
+    raise NewtonError('api keys are not set')

@@ -4,11 +4,11 @@ __version__ = '0.0.8'
 
 def newton(import_name):
     from flask import jsonify, redirect
-    from newton.web.app import ZaifBot
+    from newton.web.app import Newton
     from newton.web.resources import strategies
-    from newton.errors import ZaifBotError, InvalidRequest
+    from newton.errors import NewtonError, InvalidRequest
 
-    app = ZaifBot(import_name)
+    app = Newton(import_name)
     app.url_map.strict_slashes = False
     app.config['JSON_SORT_KEYS'] = False
 

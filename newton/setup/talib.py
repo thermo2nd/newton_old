@@ -1,7 +1,7 @@
 import os
 import sys
 import subprocess
-from newton.errors import ZaifBotError
+from newton.errors import NewtonError
 
 
 def install_ta_lib():
@@ -27,7 +27,7 @@ def install_ta_lib():
         __install_talib_for_windows(bits, py_version)
         return
 
-    raise ZaifBotError('newton does not support your platform')
+    raise NewtonError('newton does not support your platform')
 
 
 def __install_talib_for_windows(bits, py_version):
@@ -42,4 +42,4 @@ def __install_talib_for_windows(bits, py_version):
         subprocess.call(["pip", "install", file])
         return
 
-    raise ZaifBotError('newton does not support your platform')
+    raise NewtonError('newton does not support your platform')

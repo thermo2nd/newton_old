@@ -2,7 +2,7 @@ from newton.trade.portfolio import Portfolio
 from flask import Flask
 
 
-class ZaifBot(Flask):
+class Newton(Flask):
     def __init__(self, import_name):
         super().__init__(import_name)
         self.portfolio = Portfolio()
