@@ -6,13 +6,13 @@ from newton.errors import NewtonError
 
 # for trade_api
 def set_keys(key, secret):
-    env['ZAIFBOT_KEY'] = key
-    env['ZAIFBOT_SECRET'] = secret
+    env['NEWTON_KEY'] = key
+    env['NEWTON_SECRET'] = secret
 
 
 def get_keys():
-    if env.get('ZAIFBOT_KEY') and env.get('ZAIFBOT_SECRET'):
-        return env['ZAIFBOT_KEY'], env['ZAIFBOT_SECRET']
+    if env.get('NEWTON_KEY') and env.get('NEWTON_SECRET'):
+        return env['NEWTON_KEY'], env['NEWTON_SECRET']
 
     home = os.path.expanduser('~')
     config_file = os.path.join(home, '.newton')
