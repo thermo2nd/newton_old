@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Integer, Float, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, Float, String, Boolean, DateTime, Numeric, TIMESTAMP 
 
 from newton.db.config import Base
 import datetime
 import os
-
 
 class Trades(Base):
     __tablename__ = 'trades'
@@ -33,6 +32,15 @@ class CandleSticks(Base):
     average = Column('average', Float, nullable=False)
     volume = Column('volume', Float, nullable=False)
     closed = Column('closed', Boolean, nullable=False)
+
+class Tickers(Base):
+    __tablename__ = 'tickers'
+    time = Column('time', TIMESTAMP, primary_key=True)
+    market = Column('market', String, primary_key=True)
+    ask = Column('ask', Numeric, nullable=False)
+    bid = Column('bid', Numeric, nullable=False)
+    last = Column('last', Numeric, nullable=False)
+    svr_time = Column('svr_time', TIMESTAMP)
 
 
 def init_database():
