@@ -1,58 +1,20 @@
-from sqlalchemy import and_
-
 from newton.db.seed import CandleSticks
-from .base import DaoBase
-from newton.utils.utils import merge_dict, random_sleep
-from newton.exchange.api.http import BotChartApi
-
+from newton.dao.base import DaoBase
 
 class CandleSticksDao(DaoBase):
-    def __init__(self, currency_pair, period):
-        super().__init__()
-        self._currency_pair = str(currency_pair)
-        self._period = str(period)
 
-    def _get_model(self):
-        return CandleSticks
-
-    def get_by_duration(self, count, start_time, end_time, *, closed=False):
-        db_records = self._get_by_duration_db(start_time, end_time, closed=closed)
-        db_records_dict = self.rows2dicts(db_records)
-        if len(db_records_dict) >= count:
-            return db_records
-
-        api_records = self._get_by_duration_web(count, start_time, end_time)
-        return api_records
-
-    def _get_by_duration_web(self, count, start_time, to_epoch_time):
-        chart_api = BotChartApi()
-        records = chart_api.history(self._currency_pair, self._period, start_time, to_epoch_time)
-
-        while len(records) < count:
-            random_sleep(1, 2)
-            records = chart_api.history(self._currency_pair, self._period, start_time, to_epoch_time)
-
-        self._save_records(records)
-        return records
-
-    def _get_by_duration_db(self, start_time, end_time, *, closed=False):
-        with self._session() as s:
-            result = s.query(self._Model).filter(
-                and_(self._Model.time <= end_time,
-                     self._Model.time >= start_time,
-                     self._Model.currency_pair == self._currency_pair,
-                     self._Model.period == self._period,
-                     self._Model.closed == int(closed)
-                     )
-            ).order_by(self._Model.time).all()
-        return result
-
-    def _save_records(self, records):
-        new_records = [
-            merge_dict(record, {'currency_pair': self._currency_pair,
-                                'period': self._period,
-                                'closed': True}
-                       )
-            for record in records
-            ]
-        self.create_multiple(new_records)
+    @classmethod
+    def query(_cls, duration=60, major='krw', minor='btc',
+    scope_from=datetime.now()-timedelta(minutes=60), scope_to=datetime.now()):
+        with engine.connect() as conn, conn.begin():
+            return pd.read_sql_query(sa.text("""
+                    select time_bucket(':duration seconds', time) as timebucket,
+                    :duration as duration, major, minor, 
+                    first(open, time) as open, last(close, time) as close ,
+                    max(high) as high, min(low) as low, SUM(volume) as volume
+                    from tickers where
+                    major =:major and minor = :minor and time
+                    between :scope_from and :scope_to
+                    group by timebucket order by timebucket 
+                    """), conn, params={'duration': duration, 'major': major,
+                    'minor':minor, 'scope_from': scope_from, 'scope_to': scope_to})

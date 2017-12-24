@@ -1,31 +1,38 @@
 from abc import ABCMeta, abstractclassmethod
 import requests
 import datetime
-from newton.db.dao.tickers import TickersDao
-from newton.db.seed import Tickers
 
-class Client(metaclass=ABCMeta):
-    def __str__(self):
-        return self.name
+_RETRY_COUNT = 5
+_WAIT_SECOND = 5
 
-class CoinnestClient():
+def _with_retry(func):
+    def _wrapper(self, *args, **kwargs):
+        for i in range(_RETRY_COUNT):
+            try:
+                return func(self, *args, **kwargs)
+            except Exception as e:
+                a = random.uniform(0.1, 0.5)
+                time.sleep(a)
+                if i >= _RETRY_COUNT - 1:
+                    raise e
+                continue
+    return _wrapper
+
+class CoinoneClient():
     def __init__(self, credential):
         self.credential = credential
-        self.name = 'coinnest'
+        self.name = 'coinone'
 
-    def ticker(self, market):
+    @_with_retry
+    def transactions(self, market):
         params = {
-            'coin': market.minor
+            'currency': market.minor,
+            'period': 'hour'
         }
-        r = requests.get("https://api.coinnest.co.kr/api/pub/ticker", params)
+
+        r = requests.get("https://api.coinone.co.kr/trades/", params)
         resp = r.json()
-        ticker = Tickers(market = market, bid=resp['buy'], ask=resp['sell'],
-        last=resp['last'], svr_time=resp['time'])
-        TickersDao.save(ticker)
-        return {
-            'ts': datetime.datetime.now().timestamp(),
-            'svr_ts': resp['time'],
-            'bid': resp['buy'],
-            'ask': resp['sell'],
-            'last': resp['last']
-        }
+        if resp['errorCode'] != '0':
+            raise Exception("coinone api error")
+
+        return resp['completeOrders']

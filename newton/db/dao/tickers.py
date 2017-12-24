@@ -1,4 +1,3 @@
-from newton.db.seed import Tickers
 from .base import DaoBase
 
 
@@ -8,17 +7,18 @@ class TickersDao(DaoBase):
         self._market = str(market)
 
     def _get_model(self):
-        return Tickers 
+        return None 
 
     @classmethod
-    def save(cls, item):
-        print(item)
+    def save(cls, arr):
         with cls._session() as s:
-            s.execute("""INSERT INTO tickers (time, market, ask, bid, last) values (now(), :market, :ask, :bid, :last)""", 
-            {
-                "market": str(item.market),
-                "ask": item.ask,
-                "bid": item.bid,
-                "last": item.last
-            })
-            return item
+            s.execute("""INSERT INTO tickers2 (time, market, price, quantity)
+            values (:time, :market, :price, :quantity)""", arr)
+
+    @classmethod
+    def get_latest(cls):
+        with cls._session() as s:
+            result = s.execute("""
+            SELECT market, max(time) as latest from tickers2 GROUP BY market"""
+            ).fetchall()
+            return result 

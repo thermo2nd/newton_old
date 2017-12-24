@@ -1,49 +1,25 @@
-from abc import ABCMeta, abstractmethod
 from talib import abstract
 from pandas import DataFrame
-from newton.exchange.candle_sticks import CandleSticks
-from newton.exchange.currency_pairs import CurrencyPair
-from newton.exchange.period import Period
+import pandas as pd
 
-
-class Indicator(metaclass=ABCMeta):
-    _MAX_LENGTH = 100
-    _MAX_COUNT = 1000
-    _NAME = None
-
-    def __init__(self, currency_pair, period):
-        self._currency_pair = CurrencyPair(currency_pair)
-        self._period = Period(period)
-
-    @abstractmethod
-    def request_data(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _exec_talib_func(self, *args, **kwargs):
-        return abstract.Function(self.name)(*args, **kwargs)
-
-    def _get_candlesticks_df(self, count, to_epoch_time):
-        required_data_count = self._required_candlesticks_count(count)
-
-        candle_sticks_data = CandleSticks(
-            self._currency_pair,
-            self._period
-        ).request_data(required_data_count, to_epoch_time)
-
-        return DataFrame(candle_sticks_data)
-
-    @property
-    def name(self):
-        return self._NAME
+class Indicator():
 
     @classmethod
-    def _bounded_length(cls, value):
-        return min(max(value, 0), cls._MAX_LENGTH)
+    def add_rsi(_cls, data, period=14):
+        rsi_series = abstract.Function('rsi')(data, price='close',
+        timeperiod=period)
+        rsi_series.rename("rsi"+str(period), inplace=True)
+        data_rsi_added = pd.concat([data, rsi_series], axis=1)
+        data_rsi_added.dropna(inplace=True)
+        dict_data_rsi_added = data_rsi_added.astype(object).to_dict(orient='records')
+        return data_rsi_added
 
     @classmethod
-    def _bounded_count(cls, value):
-        return min(max(value, 0), cls._MAX_COUNT)
-
-    @abstractmethod
-    def _required_candlesticks_count(self, count):
-        raise NotImplementedError
+    def add_ma(_cls, data, period=50):
+        series = abstract.Function('ma')(data, price='close',
+        timeperiod=period)
+        series.rename("ma"+str(period), inplace=True)
+        data_added = pd.concat([data, series], axis=1)
+        data_added.dropna(inplace=True)
+        dict_data_added = data_added.astype(object).to_dict(orient='records')
+        return data_added
